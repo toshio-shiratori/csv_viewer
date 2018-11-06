@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="ja" />
+		<link rel="stylesheet" type="text/css" href="csv_viewer.css" media="all">
+		<script src="csv_viewer.js"></script>
+	</HEAD>
+	<BODY>
+		<p>
+			<select name="split_type" id="split_type">
+				<option value="カンマ" selected>カンマ</option>
+				<option value="タブ">タブ</option>
+			</select>
+			で区切られたCSVファイルとして取り扱います。
+		</p>
+		<p>
+			文字コードは
+			<select name="encode_type" id="encode_type">
+				<option value="Shift_JIS" selected>Shift_JIS</option>
+				<option value="utf-8">utf-8</option>
+				<option value="euc-jp">euc-jp</option>
+			</select>
+			で、ヘッダ行が
+			<select name="header_display" id="header_display">
+				<option value="ON" selected>あります。</option>
+				<option value="OFF">ありません。</option>
+			</select>
+		</p>
+		<p>
+			<input type="file" id="load_file_btn" data-name="inputfile">
+		</p>
+		<div id="drop_zone">Drop files here</div>
+		<output id="list"></output>
+		<div class="scroll_div">
+			<output id="mytable"></output>
+		</div>
+
+		<script>
+			// Setup the dnd listeners.
+			var dropZone = document.getElementById('drop_zone');
+			dropZone.addEventListener('dragover', handleDragOver, false);
+			dropZone.addEventListener('drop', handleFileSelect, false);
+
+			var input_file = document.getElementById("load_file_btn");
+			input_file.addEventListener('change', handleFileChange, false);
+
+			var split_type = document.getElementById("split_type");
+			split_type.addEventListener('change', handleOptionChange, false);
+			var encode_type = document.getElementById("encode_type");
+			encode_type.addEventListener('change', handleOptionChange, false);
+			var header_display = document.getElementById("header_display");
+			header_display.addEventListener('change', handleOptionChange, false);
+		</script>
+
+	</BODY>
+</HTML>
