@@ -105,3 +105,11 @@ div.scroll_div {
 	overflow: auto;
 	height: 90%;
 }
+
+.no-display {
+  display: none;
+}
+
+#dl_filename {
+  padding-left: 0.5em;
+}
