@@ -64,11 +64,11 @@
 			input_file.addEventListener('change', handleFileChange, false)
 
 			let split_type = document.getElementById("split_type")
-			split_type.addEventListener('change', handleOptionChange, false)
+			split_type.addEventListener('change', handleSplitTypeChange, false)
 			let encode_type = document.getElementById("encode_type")
-			encode_type.addEventListener('change', handleOptionChange, false)
+			encode_type.addEventListener('change', handleEncodeTypeChange, false)
 			let header_display = document.getElementById("header_display")
-			header_display.addEventListener('change', handleOptionChange, false)
+			header_display.addEventListener('change', handleHeaderExistsChange, false)
 
 			// First drow is download no display.
 			document.getElementById("download_area").classList.add('no-display')
