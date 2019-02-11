@@ -12,6 +12,7 @@ class CsvManager
 		this.inSplitCode = ','
 		this.inFiles = null
 		this.csvData = []
+		this.table = null
 	}
 
 	/**
@@ -248,6 +249,69 @@ class CsvManager
 			}[match]
 		})
 	}
+
+	/**
+	 * テーブル生成時の aTable クラスのインスタンスを設定
+	 * @param aTable table 
+	 */
+	setTable(table) {
+		this.table = table
+	}
+
+	/**
+	 * CSV データを２次元配列で取得
+	 */
+	getCsvDataFormatArray() {
+		const tableHtml = this.table.getTable()
+		let tbl = document.createElement("table")
+		tbl.innerHTML = tableHtml
+		const tbody = tbl.querySelector('tbody')
+		const rows = tbody.querySelectorAll('tr')
+		if (rows == null) {
+			return []
+		}
+
+		let output = []
+		const header = rows[0].querySelectorAll('th')
+		if (header.length > 0) {
+			let outputHeader = []
+			for (let index = 0; index < header.length; index++) {
+				outputHeader.push(header[index].innerText)
+			}
+			output.push(outputHeader)	
+		}
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+			const cols = rows[rowIndex].querySelectorAll('td')
+			if (cols.length > 0) {
+				let outputCols = []
+				for (let colIndex = 0; colIndex < cols.length; colIndex++) {
+					outputCols.push(cols[colIndex].innerText)
+				}
+				output.push(outputCols)
+			}
+		}
+		return output
+	}
+
+	/**
+	 * CSV データを Bob データで取得
+	 * 
+	 * @param string joinCode レコード内の単語を結合する文字
+	 * @param string toEncodeType 出力する文字コード
+	 * @return Blob CSV データ
+	 */
+	getCsvDataFormatBlob(joinCode, toEncoding) {
+		let output = []
+		const rows = this.getCsvDataFormatArray()
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+			output.push(rows[rowIndex].join(joinCode))
+		}
+		let srcContent = output.join("\n")
+		let srcArray = Encoding.convert(Encoding.stringToCode(srcContent), {
+			to: toEncoding,		// to_encoding
+		});
+		return new Blob([new Uint8Array(srcArray)], { "type" : "text/csv;" })
+	}
 }
 
 // CSV管理クラスのインスタンス生成
@@ -346,11 +410,8 @@ function createTable(csvData) {
 	}
 
 	let tbl = document.createElement("table")
-	tbl.classList.add("type08")
 	let tblHeader = document.createElement("thead")
-	tblHeader.classList.add("scrollHead")
 	let tblBody = document.createElement("tbody")
-	tblBody.classList.add("scrollBody")
 
 	let isNeedHeader = csvManager.getLoadHeaderExist()
 	for (let rowIndex = 0; rowIndex < csvData.length; rowIndex++) {
@@ -377,12 +438,25 @@ function createTable(csvData) {
 	tbl.appendChild(tblHeader)
 	tbl.appendChild(tblBody)
 
+	tblHeader.classList.add("scrollHead")
+	tblBody.classList.add("scrollBody")
+	tbl.classList.add("js-table")
+
 	document.getElementById('mytable').textContent = null
 	document.getElementById('mytable').appendChild(tbl)
+
+	const table = new aTable('.js-table', {
+		showBtnList: false,
+		lang:'ja',
+	});
+	csvManager.setTable(table)
 }
 
 /**
  * ダウンロード処理
+ * 
+ * 本メソッドは通常のテーブルを
+ * ダウンロードする際に利用します。
  */
 function handleDownload() {
 	const filename = document.getElementById('dl_filename').value
@@ -407,6 +481,29 @@ function handleDownload() {
 		to: toEncoding,		// to_encoding
 	});
 	let blob = new Blob([new Uint8Array(srcArray)], { "type" : "text/csv;" })
+	
+	if (window.navigator.msSaveBlob) { 
+		window.navigator.msSaveBlob(blob, filename)
+
+		// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+		window.navigator.msSaveOrOpenBlob(blob, filename)
+	} else {
+		document.getElementById("download").href = window.URL.createObjectURL(blob)
+	}
+}
+
+/**
+ * ダウンロード処理
+ * 
+ * 本メソッドは a-table.js を利用したテーブルを
+ * ダウンロードする際に利用します。
+ */
+function handleAtableDownload() {
+	const filename = document.getElementById('dl_filename').value
+	document.getElementById('download').download = filename
+	const joinCode = CsvManager.cnvString2SplitCode(document.getElementById('dl_split_type').value)
+	const toEncoding = document.getElementById('dl_encode_type').value
+	const blob = csvManager.getCsvDataFormatBlob(joinCode, toEncoding)
 	
 	if (window.navigator.msSaveBlob) { 
 		window.navigator.msSaveBlob(blob, filename)
