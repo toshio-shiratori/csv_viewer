@@ -3,8 +3,13 @@
 	<HEAD>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Content-Language" content="ja" />
+		<title>CSV Viewer</title>
+		<link rel="shortcut icon" href="./favicon.ico">
 		<link rel="stylesheet" type="text/css" href="csv_viewer.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./vendor/a-table/fonts/a-table-icon.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./vendor/a-table/css/a-table.css" media="all">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.29/encoding.min.js"></script>
+		<script src="vendor/a-table/js/a-table.js"></script>
 		<script src="csv_viewer.js"></script>
 	</HEAD>
 	<BODY>
@@ -47,7 +52,7 @@
 			の文字コード、ファイル名は
 			<input type="text" id="dl_filename" value="sample.csv"></textarea>
 			で
-			<a id="download" href="#" download="test.csv" onclick="handleDownload()">ダウンロード</a>
+			<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>
 			します。
 		</p>
 		<div class="scroll_div">
