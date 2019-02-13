@@ -5,11 +5,15 @@ class CsvManager
 {
 	/**
 	 * constructor
+	 * 
+	 * @param bool headerExist ヘッダ行の有無
+	 * @param string encoding 文字コード
+	 * @param string splitCode 区切り文字
 	 */
-	constructor() {
-		this.inHeaderExist = true
-		this.inEncoding = 'Shift_JIS'
-		this.inSplitCode = ','
+	constructor(headerExist = true, encoding = 'Shift_JIS', splitCode = ',') {
+		this.inHeaderExist = headerExist
+		this.inEncoding = encoding
+		this.inSplitCode = splitCode
 		this.inFiles = null
 		this.csvData = []
 		this.table = null
@@ -271,11 +275,13 @@ class CsvManager
 	 * CSV データを２次元配列で取得
 	 */
 	getCsvDataFormatArray() {
-		const tableHtml = this.table.getTable()
-		let tbl = document.createElement("table")
-		tbl.innerHTML = tableHtml
-		const tbody = tbl.querySelector('tbody')
-		const rows = tbody.querySelectorAll('tr')
+		let tbl = document.querySelector("table")
+		if (this.table != null) {
+			tbl = document.createElement("table")
+			const tableHtml = this.table.getTable()
+			tbl.innerHTML = tableHtml
+		}
+		const rows = tbl.querySelectorAll('tr')
 		if (rows == null) {
 			return []
 		}
@@ -336,8 +342,21 @@ class CsvManager
 	}
 }
 
-// CSV管理クラスのインスタンス生成
-csvManager = new CsvManager()
+/**
+ * ページの読み込み完了後のイベントハンドラ
+ */
+window.onload = function() {
+	// ページから設定情報を取得
+	const headerDisplay = document.getElementById('header_display').value
+	const encodeType = document.getElementById('encode_type').value
+	const splitType = document.getElementById('split_type').value
+
+	// CSV管理クラスのインスタンス生成
+	csvManager = new CsvManager()
+	csvManager.setLoadHeaderExist(headerDisplay)
+	csvManager.setLoadEncoding(encodeType)
+	csvManager.setLoadSplitCode(splitType)
+}
 
 function handleSplitTypeChange(evt) {
 	csvManager.setLoadSplitCode(evt.currentTarget.value)
@@ -462,16 +481,42 @@ function createTable(csvData) {
 
 	tblHeader.classList.add("scrollHead")
 	tblBody.classList.add("scrollBody")
-	tbl.classList.add("js-table")
+
+	// aTable が利用できる場合
+	if (this.canUseAtable(tbl)) {
+		tbl.classList.add("js-table")
+	}
+	// 上記以外の場合
+	else {
+		tbl.classList.add("type08")
+	}
 
 	document.getElementById('mytable').textContent = null
 	document.getElementById('mytable').appendChild(tbl)
 
-	const table = new aTable('.js-table', {
-		showBtnList: false,
-		lang:'ja',
-	});
-	csvManager.setTable(table)
+	// aTable が利用できる場合
+	if (this.canUseAtable(tbl)) {
+		const table = new aTable('.js-table', {
+			showBtnList: false,
+			lang:'ja',
+		});
+		csvManager.setTable(table)
+	}
+}
+
+/**
+ * aTable の利用有無
+ * 
+ * 快適に操作できる限界は100行くらいなので
+ * 100行を超える場合は、表示のみとする。
+ * 
+ * @param HTMLTableElement table 
+ * @return bool true できる
+ * @return bool false できない
+ */
+function canUseAtable(table) {
+	const rows = table.querySelectorAll("tr")
+	return rows.length <= 100 ? true : false
 }
 
 /**
