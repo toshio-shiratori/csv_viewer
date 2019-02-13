@@ -21,6 +21,28 @@ class CsvManager
 	}
 
 	/**
+	 * データの追加
+	 * 空行は無視します。
+	 * 
+	 * @param string record CSV フォーマットのレコード
+	 */
+	dataPush(record) {
+		if (record.length == 0) {
+			return
+		}
+		this.csvData.push(CsvManager.csvSplit(record, this.inSplitCode))
+		this.csvDataCount++
+	}
+
+	/**
+	 * getter csv data count
+	 * @param int データ件数
+	 */
+	getDataCount() {
+		return this.csvDataCount
+	}
+
+	/**
 	 * setter load files
 	 * @param FileList files 
 	 */
@@ -157,6 +179,10 @@ class CsvManager
 			reader.onload = function(e) {
 				let text = e.target.result
 				let tempArray = text.split("\n")
+				const length = tempArray.length
+				for (let index = 0; index < length; index++) {
+					csvManager.dataPush(tempArray[index])
+				}
 				createTable(tempArray)
 			}
 	
@@ -446,23 +472,40 @@ function execute(files) {
  * @param array tempArray レコードの配列
  */
 function createTable(tempArray) {
-	const length = tempArray.length
-	for (let index = 0; index < length; index++) {
-		if (tempArray[index].length == 0) {
-			continue
-		}
-		let row = CsvManager.csvSplit(tempArray[index], csvManager.getLoadSplitCode())
-		csvManager.csvData.push(row)
-		csvManager.csvDataCount++
+	/**
+	 * 処理するデータ量
+	 * 
+	 * 100 以下に設定してしまうと aTable 利用の兼ね合いで
+	 * テーブル表示が期待する内容にならないので注意
+	 * @see canUseAtable
+	 */
+	const procesingDataCount = 1000
+
+	let rowStart = 0
+	let rowEnd = procesingDataCount
+
+	// 初期テーブル作成
+	createCsvTable(csvManager.csvData, rowStart, rowEnd)
+
+	// 残りのデータをテーブルに追加
+	while (rowEnd < csvManager.getDataCount()) {
+		rowStart = rowEnd
+		rowEnd += procesingDataCount
+
+		// ユーザーに進捗が分かるように非同期で処理を行う
+		// 本当はサービスワーカーに処理を任せたい
+		let start = rowStart
+		let end = rowEnd
+		window.setTimeout(function() {
+			insertTableRecord(csvManager.csvData, start, end)
+		}, 100)
 	}
-	// createCsvTable(csvManager.csvData, 0, 1000)
-	createCsvTable(csvManager.csvData)
 
-	// download show display.
-	document.getElementById("download_area").classList.remove('no-display')
-
-	// loader animation stop.
-	document.getElementById("loader").classList.add('no-display')
+	// ダウンロードエリアの表示とローディングアニメーションの停止
+	window.setTimeout(function() {
+		document.getElementById("download_area").classList.remove('no-display')
+		document.getElementById("loader").classList.add('no-display')
+	}, 100)
 }
 
 /**
@@ -539,6 +582,37 @@ function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 		});
 		csvManager.setTable(table)
 	}
+}
+
+/**
+ * CSV データをテーブルのレコードとして追加します
+ * 
+ * @param array csvData CSV データの２次元配列
+ * @param int rowStart データ行の開始位置
+ * @param int rowEnd データ行の終了位置
+ */
+function insertTableRecord(csvData, rowStart, rowEnd) {
+	let start_ms = new Date().getTime()
+
+	const tbl = document.querySelector("table")
+	for (let rowIndex = rowStart; rowIndex < csvData.length; rowIndex++) {
+		if (rowIndex >= rowEnd) {
+			// 指定された終了位置に到達したので処理中断
+			break
+		}
+		// テーブルの最終行に追加
+		let row = tbl.insertRow(-1)
+		let record = csvData[rowIndex]
+		for (let colIndex = 0; colIndex < record.length; colIndex++) {
+			let cell = document.createElement("td")
+			let cellText = document.createTextNode(record[colIndex])
+			cell.appendChild(cellText)
+			row.appendChild(cell)
+		}
+	}
+
+	let elapsed_ms = new Date().getTime() - start_ms
+	console.log('処理時間：' + elapsed_ms + 'ms  rowStart:' + rowStart + ' rowEnd:' + rowEnd)
 }
 
 /**
