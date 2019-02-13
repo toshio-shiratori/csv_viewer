@@ -16,6 +16,7 @@ class CsvManager
 		this.inSplitCode = splitCode
 		this.inFiles = null
 		this.csvData = []
+		this.csvDataCount = 0
 		this.table = null
 	}
 
@@ -144,31 +145,19 @@ class CsvManager
 		document.getElementById("download_area").classList.add('no-display')
 
 		csvManager.csvData = []
+		csvManager.csvDataCount = 0
 
 		// CSV ファイルの場合
 		if (file.type.match("application/vnd.ms-excel") ||
 			file.type.match("application/x-csv") ||
 			this.isTargetFile(file.name)) {
 
-			const splitCode = this.inSplitCode
+			// const splitCode = this.inSplitCode
 			let reader = new FileReader()
 			reader.onload = function(e) {
 				let text = e.target.result
 				let tempArray = text.split("\n")
-				for (let index = 0; index < tempArray.length; index++) {
-					if (tempArray[index].length == 0) {
-						continue
-					}
-					let row = CsvManager.csvSplit(tempArray[index], splitCode)
-					csvManager.csvData.push(row)
-				}
-				createTable(csvManager.csvData)
-
-				// download show display.
-				document.getElementById("download_area").classList.remove('no-display')
-
-				// loader animation stop.
-				document.getElementById("loader").classList.add('no-display')
+				createTable(tempArray)
 			}
 	
 			reader.loadstart = function(e) { print("onloadstart")}
@@ -452,10 +441,41 @@ function execute(files) {
 }
 
 /**
- * CSV データを入力としたテーブルを作成
- * @param array csvData CSV データの２次元配列
+ * レコードを入力としたテーブルを作成
+ * 
+ * @param array tempArray レコードの配列
  */
-function createTable(csvData) {
+function createTable(tempArray) {
+	const length = tempArray.length
+	for (let index = 0; index < length; index++) {
+		if (tempArray[index].length == 0) {
+			continue
+		}
+		let row = CsvManager.csvSplit(tempArray[index], csvManager.getLoadSplitCode())
+		csvManager.csvData.push(row)
+		csvManager.csvDataCount++
+	}
+	// createCsvTable(csvManager.csvData, 0, 1000)
+	createCsvTable(csvManager.csvData)
+
+	// download show display.
+	document.getElementById("download_area").classList.remove('no-display')
+
+	// loader animation stop.
+	document.getElementById("loader").classList.add('no-display')
+}
+
+/**
+ * CSV データを入力としたテーブルを作成
+ * 
+ * MAX 10万行までしか処理しません。
+ * なぜなら待ち時間が我慢の限界を超えるため。
+ * 
+ * @param array csvData CSV データの２次元配列
+ * @param int rowStart データ行の開始位置
+ * @param int rowEnd データ行の終了位置
+ */
+function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 	let output = []
 	if (csvData.length == 0) {
 		output.push('<strong class="error">CSVファイルのみ対応しております。</br>ご了承ください。</strong>')
@@ -468,7 +488,11 @@ function createTable(csvData) {
 	let tblBody = document.createElement("tbody")
 
 	let isNeedHeader = csvManager.getLoadHeaderExist()
-	for (let rowIndex = 0; rowIndex < csvData.length; rowIndex++) {
+	for (let rowIndex = rowStart; rowIndex < csvData.length; rowIndex++) {
+		if (rowIndex >= rowEnd) {
+			// 指定された終了位置に到達したので処理中断
+			break
+		}
 		let record = csvData[rowIndex]
 		let row = document.createElement("tr")
 		if (isNeedHeader && rowIndex == 0) {
