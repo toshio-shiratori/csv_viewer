@@ -137,6 +137,12 @@ class CsvManager
 	 * @param string file ロードするファイル名
 	 */
 	loadFile(file) {	
+		// loader animation start.
+		document.getElementById("loader").classList.remove('no-display')
+
+		// download no display.
+		document.getElementById("download_area").classList.add('no-display')
+
 		csvManager.csvData = []
 
 		// CSV ファイルの場合
@@ -160,6 +166,9 @@ class CsvManager
 
 				// download show display.
 				document.getElementById("download_area").classList.remove('no-display')
+
+				// loader animation stop.
+				document.getElementById("loader").classList.add('no-display')
 			}
 	
 			reader.loadstart = function(e) { print("onloadstart")}
@@ -432,6 +441,7 @@ function execute(files) {
 		'encoding: <strong>', encoding, '</strong>, ',
 		'last modified: ',
 		f.lastModifiedDate.toLocaleDateString(), '</li>')
+		document.getElementById('mytable').textContent = null
 		csvManager.loadFile(f)
 		break
 	}

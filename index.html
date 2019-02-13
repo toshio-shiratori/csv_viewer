@@ -5,7 +5,8 @@
 		<meta http-equiv="Content-Language" content="ja" />
 		<title>CSV Viewer</title>
 		<link rel="shortcut icon" href="./favicon.ico">
-		<link rel="stylesheet" type="text/css" href="csv_viewer.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/loader.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/csv_viewer.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/fonts/a-table-icon.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/css/a-table.css" media="all">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.29/encoding.min.js"></script>
@@ -59,6 +60,7 @@
 			<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>
 			します。
 		</p>
+		<div id="loader" class="loader"><p>Now Loading...</p></div>
 		<div class="scroll_div">
 			<output id="mytable"></output>
 		</div>
@@ -81,6 +83,7 @@
 
 			// First drow is download no display.
 			document.getElementById("download_area").classList.add('no-display')
+			document.getElementById("loader").classList.add('no-display')
 		</script>
 
 	</BODY>
