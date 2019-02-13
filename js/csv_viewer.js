@@ -182,6 +182,9 @@ class CsvManager
 
 			// download no display.
 			document.getElementById("download_area").classList.add('no-display')
+
+			// loader animation stop.
+			document.getElementById("loader").classList.add('no-display')
 		}
 	}
 
