@@ -18,19 +18,17 @@
 				<option value="カンマ" selected>カンマ</option>
 				<option value="タブ">タブ</option>
 			</select>
-			で区切られたCSVファイルとして取り扱います。
-		</p>
-		<p>
-			文字コードは
+			で区切られた
 			<select id="encode_type">
 				<option value="Shift_JIS" selected>Shift_JIS</option>
 				<option value="utf-8">utf-8</option>
 			</select>
-			で、ヘッダ行が
+			の文字コード、ヘッダ行は
 			<select id="header_display">
-				<option value="ON" selected>あります。</option>
-				<option value="OFF">ありません。</option>
+				<option value="ON" selected>あり</option>
+				<option value="OFF">なし</option>
 			</select>
+			で CSV ファイルを開きます。
 		</p>
 		<div id="input_area">
 			<p>
@@ -49,7 +47,13 @@
 				<option value="Shift_JIS" selected>Shift_JIS</option>
 				<option value="utf-8">utf-8</option>
 			</select>
-			の文字コード、ファイル名は
+			の文字コード、改行コードは
+			<select id="dl_line_feed">
+				<option value="CRLF" selected>CRLF</option>
+				<option value="LF">LF</option>
+			</select>
+			を選択<br>
+			ファイル名は
 			<input type="text" id="dl_filename" value="sample.csv"></textarea>
 			で
 			<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>

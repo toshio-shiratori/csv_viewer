@@ -259,6 +259,15 @@ class CsvManager
 	}
 
 	/**
+	 * 文字列の最後にある改行コードを除去
+	 * @param string text 対象の文字列
+	 * @return string 改行コードが除去された文字列
+	 */
+	trimLineFeed(text) {
+		return text.replace(/[\n\r]$/, '')
+	}
+
+	/**
 	 * CSV データを２次元配列で取得
 	 */
 	getCsvDataFormatArray() {
@@ -276,7 +285,8 @@ class CsvManager
 		if (header.length > 0) {
 			let outputHeader = []
 			for (let index = 0; index < header.length; index++) {
-				outputHeader.push(header[index].innerText)
+				const text = this.trimLineFeed(header[index].innerText)
+				outputHeader.push(text)
 			}
 			output.push(outputHeader)	
 		}
@@ -285,7 +295,8 @@ class CsvManager
 			if (cols.length > 0) {
 				let outputCols = []
 				for (let colIndex = 0; colIndex < cols.length; colIndex++) {
-					outputCols.push(cols[colIndex].innerText)
+					const text = this.trimLineFeed(cols[colIndex].innerText)
+					outputCols.push(text)
 				}
 				output.push(outputCols)
 			}
@@ -294,19 +305,30 @@ class CsvManager
 	}
 
 	/**
+	 * 改行コードを取得
+	 * 
+	 * @param string lineFeed 改行コードを示す文字列 (CRLF, LF)
+	 * @return string 改行コード
+	 */
+	cnvLineFeed(lineFeed) {
+		return lineFeed == 'CRLF' ? '\r\n' : '\n'
+	}
+
+	/**
 	 * CSV データを Bob データで取得
 	 * 
 	 * @param string joinCode レコード内の単語を結合する文字
 	 * @param string toEncodeType 出力する文字コード
+	 * @param string lineFeed レコードに付与する改行コード(CRLF, LF)
 	 * @return Blob CSV データ
 	 */
-	getCsvDataFormatBlob(joinCode, toEncoding) {
+	getCsvDataFormatBlob(joinCode, toEncoding, lineFeed) {
 		let output = []
 		const rows = this.getCsvDataFormatArray()
 		for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
 			output.push(rows[rowIndex].join(joinCode))
 		}
-		let srcContent = output.join("\n")
+		let srcContent = output.join(this.cnvLineFeed(lineFeed))
 		let srcArray = Encoding.convert(Encoding.stringToCode(srcContent), {
 			to: toEncoding,		// to_encoding
 		});
@@ -503,7 +525,8 @@ function handleAtableDownload() {
 	document.getElementById('download').download = filename
 	const joinCode = CsvManager.cnvString2SplitCode(document.getElementById('dl_split_type').value)
 	const toEncoding = document.getElementById('dl_encode_type').value
-	const blob = csvManager.getCsvDataFormatBlob(joinCode, toEncoding)
+	const lineFeed = document.getElementById('dl_line_feed').value
+	const blob = csvManager.getCsvDataFormatBlob(joinCode, toEncoding, lineFeed)
 	
 	if (window.navigator.msSaveBlob) { 
 		window.navigator.msSaveBlob(blob, filename)
