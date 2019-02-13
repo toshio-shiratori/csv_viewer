@@ -9,9 +9,9 @@
 		<link rel="stylesheet" type="text/css" href="./css/csv_viewer.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/fonts/a-table-icon.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/css/a-table.css" media="all">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.29/encoding.min.js"></script>
-		<script src="vendor/a-table/js/a-table.js"></script>
-		<script src="csv_viewer.js"></script>
+		<script src="./vendor/encoding/encoding.min.js"></script>
+		<script src="./vendor/a-table/js/a-table.js"></script>
+		<script src="./js/csv_viewer.js"></script>
 	</HEAD>
 	<BODY>
 		<p>
@@ -81,7 +81,7 @@
 			let header_display = document.getElementById("header_display")
 			header_display.addEventListener('change', handleHeaderExistsChange, false)
 
-			// First drow is download no display.
+			// First display don't show.
 			document.getElementById("download_area").classList.add('no-display')
 			document.getElementById("loader").classList.add('no-display')
 		</script>
