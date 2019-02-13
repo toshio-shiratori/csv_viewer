@@ -5,12 +5,13 @@
 		<meta http-equiv="Content-Language" content="ja" />
 		<title>CSV Viewer</title>
 		<link rel="shortcut icon" href="./favicon.ico">
-		<link rel="stylesheet" type="text/css" href="csv_viewer.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/loader.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/csv_viewer.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/fonts/a-table-icon.css" media="all">
 		<link rel="stylesheet" type="text/css" href="./vendor/a-table/css/a-table.css" media="all">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/encoding-japanese/1.0.29/encoding.min.js"></script>
-		<script src="vendor/a-table/js/a-table.js"></script>
-		<script src="csv_viewer.js"></script>
+		<script src="./vendor/encoding/encoding.min.js"></script>
+		<script src="./vendor/a-table/js/a-table.js"></script>
+		<script src="./js/csv_viewer.js"></script>
 	</HEAD>
 	<BODY>
 		<p>
@@ -18,19 +19,17 @@
 				<option value="カンマ" selected>カンマ</option>
 				<option value="タブ">タブ</option>
 			</select>
-			で区切られたCSVファイルとして取り扱います。
-		</p>
-		<p>
-			文字コードは
+			で区切られた
 			<select id="encode_type">
 				<option value="Shift_JIS" selected>Shift_JIS</option>
 				<option value="utf-8">utf-8</option>
 			</select>
-			で、ヘッダ行が
+			の文字コード、ヘッダ行は
 			<select id="header_display">
-				<option value="ON" selected>あります。</option>
-				<option value="OFF">ありません。</option>
+				<option value="ON" selected>あり</option>
+				<option value="OFF">なし</option>
 			</select>
+			で CSV ファイルを開きます。
 		</p>
 		<div id="input_area">
 			<p>
@@ -49,12 +48,19 @@
 				<option value="Shift_JIS" selected>Shift_JIS</option>
 				<option value="utf-8">utf-8</option>
 			</select>
-			の文字コード、ファイル名は
+			の文字コード、改行コードは
+			<select id="dl_line_feed">
+				<option value="CRLF" selected>CRLF</option>
+				<option value="LF">LF</option>
+			</select>
+			を選択<br>
+			ファイル名は
 			<input type="text" id="dl_filename" value="sample.csv"></textarea>
 			で
 			<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>
 			します。
 		</p>
+		<div id="loader" class="loader"><p>Now Loading...</p></div>
 		<div class="scroll_div">
 			<output id="mytable"></output>
 		</div>
@@ -75,8 +81,9 @@
 			let header_display = document.getElementById("header_display")
 			header_display.addEventListener('change', handleHeaderExistsChange, false)
 
-			// First drow is download no display.
+			// First display don't show.
 			document.getElementById("download_area").classList.add('no-display')
+			document.getElementById("loader").classList.add('no-display')
 		</script>
 
 	</BODY>

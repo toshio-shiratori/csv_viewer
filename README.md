@@ -1,5 +1,43 @@
 # csv_viewer
-Simple CSV viewer for WEB version
 
-# Auto deploy
-Push to the repository and it will be deployed automatically.
+シンプルな CSV ファイルの閲覧サービスです。
+
+## 公開サイト
+
+以下 URL で公開しています。  
+ご自由にご利用ください。
+
+- <https://sastd.com/tools/csv_viewer>
+
+## 説明
+
+本サービスは Javascript で実装されており、読み込んだ CSV ファイルの内容を  
+サーバー側に送信するような処理は一切おこなっていません。  
+安心してご利用ください。
+
+### 編集機能について
+
+大きいデータについては編集機能が快適に利用できません。  
+よって、以下条件で利用可否の切替をおこなっています。
+
+- 編集ができる条件
+  - 100行以内の CSV データ
+- 編集ができない条件
+  - 101行以上の CSV データ
+
+### 文字コードについて
+
+以下の文字コードに対応しています。  
+その他の文字コードに対応はしません。
+
+- utf-8
+- Shift_JIS
+
+## 利用ライブラリ
+
+以下のライブラリを利用しています。
+
+|ライブラリ名|利用目的|参照 URL|
+|---|---|---|
+|encoding-japanese|文字コードの変換処理|https://github.com/polygonplanet/encoding.js|
+|a-table|テーブルの編集|https://appleple.github.io/a-table.js|
