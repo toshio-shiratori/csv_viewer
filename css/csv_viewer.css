@@ -17,6 +17,22 @@ strong.error {
   color: #ff0000;
 }
 
+summary {
+  color: red;
+}
+
+details[open] {
+  height: auto;
+  background: lightyellow;
+}
+details {
+  transition: 0.5s;
+  background: white;
+}
+
+/**
+ * table css
+ */
 .sticky_table {
 	width: auto;
 	border-collapse: collapse;
@@ -30,6 +46,7 @@ strong.error {
   height: calc(75vh);
   border-collapse: collapse;
   font-size: 0;
+  margin-bottom: 50px;
 }
 
 .sticky_table thead,
@@ -100,4 +117,33 @@ strong.error {
 
 #dl_filename {
   padding-left: 0.5em;
+}
+
+/**
+ * footer css
+ */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  background: none;
+  text-align: center;
+  font-size: 10pt;
+  right: 0px;
+}
+
+.footer p {
+  margin-top: 8px;
+}
+
+.footer p a {
+  color: #7f8c8d;
+  border: 1px solid #7f8c8d;
+  width: 80%;
+  margin: 0 auto;
+  padding: 5px 20px;
+  border-radius: 3px;
+  margin-top: 8px;
+  text-decoration: none;
 }

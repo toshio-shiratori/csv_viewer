@@ -14,55 +14,61 @@
 		<script src="./js/csv_viewer.js"></script>
 	</HEAD>
 	<BODY>
-		<p>
-			<select id="split_type">
-				<option value="カンマ" selected>カンマ</option>
-				<option value="タブ">タブ</option>
-			</select>
-			で区切られた
-			<select id="encode_type">
-				<option value="Shift_JIS" selected>Shift_JIS</option>
-				<option value="utf-8">utf-8</option>
-			</select>
-			の文字コード、ヘッダ行は
-			<select id="header_display">
-				<option value="ON" selected>あり</option>
-				<option value="OFF">なし</option>
-			</select>
-			で CSV ファイルを開きます。
-		</p>
-		<div id="input_area">
+		<details open>
+			<summary>操作エリア（クリックで表示有無を切り替えます。）</summary>
 			<p>
-				<input type="file" id="load_file_btn" data-name="inputfile">
+				<select id="split_type">
+					<option value="カンマ" selected>カンマ</option>
+					<option value="タブ">タブ</option>
+				</select>
+				で区切られた
+				<select id="encode_type">
+					<option value="Shift_JIS" selected>Shift_JIS</option>
+					<option value="utf-8">utf-8</option>
+				</select>
+				の文字コード、ヘッダ行は
+				<select id="header_display">
+					<option value="ON" selected>あり</option>
+					<option value="OFF">なし</option>
+				</select>
+				で CSV ファイルを開きます。
 			</p>
-			<div id="drop_zone">Drop files here</div>
-		</div>
-		<output id="list"></output>	
-		<p id="download_area">
-			<select id="dl_split_type">
-				<option value="カンマ" selected>カンマ</option>
-				<option value="タブ">タブ</option>
-			</select>
-			で区切られた
-			<select id="dl_encode_type">
-				<option value="Shift_JIS" selected>Shift_JIS</option>
-				<option value="utf-8">utf-8</option>
-			</select>
-			の文字コード、改行コードは
-			<select id="dl_line_feed">
-				<option value="CRLF" selected>CRLF</option>
-				<option value="LF">LF</option>
-			</select>
-			を選択<br>
-			ファイル名は
-			<input type="text" id="dl_filename" value="sample.csv"></textarea>
-			で
-			<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>
-			します。
-		</p>
-		<div id="loader" class="loader"><p>Now Loading...</p></div>
+			<div id="input_area">
+				<p>
+					<input type="file" id="load_file_btn" data-name="inputfile">
+				</p>
+				<div id="drop_zone">Drop files here</div>
+			</div>
+			<output id="list"></output>	
+			<p id="download_area">
+				<select id="dl_split_type">
+					<option value="カンマ" selected>カンマ</option>
+					<option value="タブ">タブ</option>
+				</select>
+				で区切られた
+				<select id="dl_encode_type">
+					<option value="Shift_JIS" selected>Shift_JIS</option>
+					<option value="utf-8">utf-8</option>
+				</select>
+				の文字コード、改行コードは
+				<select id="dl_line_feed">
+					<option value="CRLF" selected>CRLF</option>
+					<option value="LF">LF</option>
+				</select>
+				を選択<br>
+				ファイル名は
+				<input type="text" id="dl_filename" value="sample.csv"></textarea>
+				で
+				<a id="download" href="#" download="test.csv" onclick="handleAtableDownload()">ダウンロード</a>
+				します。
+			</p>
+			<div id="loader" class="loader"><p>Now Loading...</p></div>
+		</details>
 		<div>
 			<output id="mytable"></output>
+		</div>
+		<div id="footer" class="footer">
+			<p><a href="https://sastd.com/" target="_blank">© シンプルアップ工房</a></p>
 		</div>
 
 		<script>

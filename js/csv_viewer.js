@@ -505,6 +505,7 @@ function createTable(tempArray) {
 	window.setTimeout(function() {
 		document.getElementById("download_area").classList.remove('no-display')
 		document.getElementById("loader").classList.add('no-display')
+		document.getElementById("footer").style.position = 'sticky'
 	}, 100)
 }
 
@@ -558,9 +559,6 @@ function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 	}
 	tbl.appendChild(tblHeader)
 	tbl.appendChild(tblBody)
-
-	// tblHeader.classList.add("scrollHead")
-	// tblBody.classList.add("scrollBody")
 
 	// aTable が利用できる場合
 	if (this.canUseAtable(tbl)) {
