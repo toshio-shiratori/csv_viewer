@@ -2,11 +2,6 @@ html, body {
 	height: 85%;
 }
 
-.example {
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
 #drop_zone {
   border: 2px dashed #bbb;
   -moz-border-radius: 5px;
@@ -18,92 +13,85 @@ html, body {
   color: #bbb;
 }
 
-.thumb {
-  height: 75px;
-  border: 1px solid #000;
-  margin: 10px 5px 0 0;
-}
-
-#progress_bar {
-  margin: 10px 0;
-  padding: 3px;
-  border: 1px solid #000;
-  font-size: 14px;
-  clear: both;
-  opacity: 0;
-  -o-transition: opacity 1s linear;
-  -moz-transition: opacity 1s linear;
-  -webkit-transition: opacity 1s linear;
-}
-
-#progress_bar.loading {
-  opacity: 1.0;
-}
-
-#progress_bar .percent {
-  background-color: #99ccff;
-  height: auto;
-  width: 0;
-}
-
-#byte_content {
-  margin: 5px 0;
-  max-height: 100px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#byte_range {
-  margin-top: 5px;
-}
-
 strong.error {
   color: #ff0000;
 }
 
-table.type08 {
+.sticky_table {
 	width: auto;
-	font: 10pt bold 'Vollkorn';
 	border-collapse: collapse;
 	text-align: left;
 	line-height: 1.5;
-	border-left: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  display: block;
+  position: relative;
+  overflow: scroll;
+  width: calc(100vw - 3.0rem);
+  height: calc(75vh);
+  border-collapse: collapse;
+  font-size: 0;
 }
 
-table.type08 thead th {
-	padding: 10px;
-	font-weight: bold;
+.sticky_table thead,
+.sticky_table tbody {
+  display: block;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.sticky_table thead {
 	border-top: 1px solid #ccc;
-	border-right: 1px solid #ccc;
 	border-bottom: 2px solid #c00;
 	background: #dcdcd1;
 }
 
-table.type08 tbody {
-	overflow-x: auto;
-	white-space: nowrap;
-	width: auto;
-}
-
-table.type08 tbody th {
+.sticky_table thead th {
 	padding: 10px;
 	font-weight: bold;
-	vertical-align: top;
 	border-right: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
-	background: #ececec;
+	background: #dcdcd1;
 }
 
-table.type08 td {
+.sticky_table th,
+.sticky_table td {
+  display: inline-block;
+  width: 8.0rem;
+  background: #fff;
+  font-size: 1.0rem;
+}
+
+.sticky_table tbody th {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.sticky_table thead {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.sticky_table thead th.blank {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.sticky_table tbody tr {
+	vertical-align: top;
+	border-bottom: 1px solid #ccc;
+}
+
+.sticky_table td {
 	padding: 10px;
 	vertical-align: top;
 	border-right: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
-}
-
-div.scroll_div {
-	overflow: auto;
-	height: 90%;
 }
 
 .no-display {

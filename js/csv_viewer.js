@@ -559,8 +559,8 @@ function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 	tbl.appendChild(tblHeader)
 	tbl.appendChild(tblBody)
 
-	tblHeader.classList.add("scrollHead")
-	tblBody.classList.add("scrollBody")
+	// tblHeader.classList.add("scrollHead")
+	// tblBody.classList.add("scrollBody")
 
 	// aTable が利用できる場合
 	if (this.canUseAtable(tbl)) {
@@ -568,7 +568,7 @@ function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 	}
 	// 上記以外の場合
 	else {
-		tbl.classList.add("type08")
+		tbl.classList.add("sticky_table")
 	}
 
 	document.getElementById('mytable').textContent = null
