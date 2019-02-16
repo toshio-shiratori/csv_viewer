@@ -283,6 +283,7 @@ class CsvManager
 
 	/**
 	 * テーブル生成時の aTable クラスのインスタンスを設定
+	 * 
 	 * @param aTable table 
 	 */
 	setTable(table) {
@@ -291,11 +292,31 @@ class CsvManager
 
 	/**
 	 * 文字列の最後にある改行コードを除去
+	 * 
 	 * @param string text 対象の文字列
 	 * @return string 改行コードが除去された文字列
 	 */
 	trimLineFeed(text) {
 		return text.replace(/[\n\r]$/, '')
+	}
+
+	/**
+	 * th タグに紛れ込んだ td タグを th タグに変換
+	 * 
+	 * @param HTMLTableElement table 
+	 */
+	convertTd2Th(table) {
+		// 先頭行を抽出
+		const rows = table.querySelectorAll('tr')
+		let row = rows[0]
+		let html = row.innerHTML
+		// th タグが利用されているか？
+		const result = html.match(/<th>/i)
+		if (result != null) {
+			const newHtml = html.replace(/<td>/i, '<th>')
+			const newHtml2 = newHtml.replace(/<\/td>/i, '</th>')
+			row.innerHTML = newHtml2
+		}
 	}
 
 	/**
@@ -307,6 +328,7 @@ class CsvManager
 			tbl = document.createElement("table")
 			const tableHtml = this.table.getTable()
 			tbl.innerHTML = tableHtml
+			this.convertTd2Th(tbl)
 		}
 		const rows = tbl.querySelectorAll('tr')
 		if (rows == null) {
@@ -579,6 +601,10 @@ function createCsvTable(csvData, rowStart = 0, rowEnd = 100000) {
 			lang:'ja',
 		});
 		csvManager.setTable(table)
+	}
+	// 上記以外の場合
+	else {
+		csvManager.setTable(null)
 	}
 }
 
