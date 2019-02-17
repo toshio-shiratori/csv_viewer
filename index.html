@@ -39,6 +39,9 @@
 				</p>
 				<div id="drop_zone">Drop files here</div>
 			</div>
+			<div id="create_new">
+				<button type="button">ファイルを新規に作成する</button>
+			</div>
 			<output id="list"></output>	
 			<p id="download_area">
 				<select id="dl_split_type">
@@ -73,19 +76,23 @@
 
 		<script>
 			// Setup the dnd listeners.
-			let dropZone = document.getElementById('drop_zone')
+			const dropZone = document.getElementById('drop_zone')
 			dropZone.addEventListener('dragover', handleDragOver, false)
 			dropZone.addEventListener('drop', handleFileSelect, false)
 
-			let input_file = document.getElementById("load_file_btn")
+			const input_file = document.getElementById("load_file_btn")
 			input_file.addEventListener('change', handleFileChange, false)
 
-			let split_type = document.getElementById("split_type")
+			const split_type = document.getElementById("split_type")
 			split_type.addEventListener('change', handleSplitTypeChange, false)
-			let encode_type = document.getElementById("encode_type")
+			const encode_type = document.getElementById("encode_type")
 			encode_type.addEventListener('change', handleEncodeTypeChange, false)
-			let header_display = document.getElementById("header_display")
+			const header_display = document.getElementById("header_display")
 			header_display.addEventListener('change', handleHeaderExistsChange, false)
+
+			// Setup the create new button listeners.
+			const create_new = document.getElementById("create_new")
+			create_new.addEventListener('click', handleCreateNew, false)
 
 			// First display don't show.
 			document.getElementById("download_area").classList.add('no-display')
