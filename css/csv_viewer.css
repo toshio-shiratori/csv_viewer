@@ -2,7 +2,10 @@ html, body {
 	height: 85%;
 }
 
-#drop_zone {
+/**
+ * operation area css
+ */
+ #drop_zone {
   border: 2px dashed #bbb;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -25,9 +28,15 @@ details[open] {
   height: auto;
   background: lightyellow;
 }
+
 details {
   transition: 0.5s;
   background: white;
+}
+
+#create_new {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 /**

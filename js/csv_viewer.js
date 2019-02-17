@@ -429,6 +429,29 @@ function handleOptionChange(evt) {
 	}
 }
 
+/**
+ * CSV ファイルを空で新規作成
+ * @param {*} evt 
+ */
+function handleCreateNew(evt) {
+	console.log('handleCreateNew')
+
+	const off = 'OFF'
+	document.getElementById("header_display").value = off
+	csvManager.setLoadHeaderExist(off)
+
+	// コピペ用に 1 セルのテーブルを作成
+	const csvData = []
+	const row = []
+	row.push('ここの内容を削除後、スプレッドシートや Excel の表をコピペで貼り付けてください。')
+	csvData.push(row)
+	createCsvTable(csvData, 0, 1)
+
+	// ダウンロードエリアの表示
+	document.getElementById("download_area").classList.remove('no-display')
+	document.getElementById("footer").style.position = 'sticky'
+}
+
 function handleFileChange(evt) {
 	let input_file = document.getElementById("load_file_btn")
 
