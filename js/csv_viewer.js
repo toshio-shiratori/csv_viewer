@@ -10,7 +10,7 @@ class CsvManager
 	 * @param string encoding 文字コード
 	 * @param string splitCode 区切り文字
 	 */
-	constructor(headerExist = true, encoding = 'Shift_JIS', splitCode = ',') {
+	constructor(headerExist = true, encoding = 'auto', splitCode = 'auto') {
 		this.inHeaderExist = headerExist
 		this.inEncoding = encoding
 		this.inSplitCode = splitCode
@@ -77,7 +77,9 @@ class CsvManager
 
 	/**
 	 * 区切り文字の名称をコードに変換
+	 * 
 	 * @param string string 区切り文字の名称
+	 * @return string 区切り文字のコード
 	 */
 	static cnvString2SplitCode(string) {
 		let splitCode = ','
@@ -92,6 +94,25 @@ class CsvManager
 	}
 
 	/**
+	 * 区切り文字のコードを名称に変換
+	 * 
+	 * @param string splitCode 区切り文字のコード
+	 * @return string 区切り文字の名称
+	 */
+	static cnvSplitCode2String(splitCode) {
+		let string = 'カンマ'
+		switch (splitCode) {
+			case "\t":
+				string = 'タブ'
+				break
+			default:
+				// Do Nothing.
+				break
+		}
+		return string
+	}
+
+	/**
 	 * setter load splitCode
 	 * @param string splitCode (カンマ, タブ)
 	 */
@@ -103,7 +124,11 @@ class CsvManager
 			case "タブ":
 				this.inSplitCode = '\t'
 				break
+			case "auto":
+				this.inSplitCode = 'auto'
+				break
 			default:
+				// Do Nothing.
 				break
 		}
 	}
@@ -151,6 +176,59 @@ class CsvManager
 	}
 
 	/**
+	 * 区切り文字の自動検出
+	 * 
+	 * @param string record CSV フォーマットのレコード
+	 */
+	autoDetectSplitCode(record) {
+		if (this.inSplitCode != 'auto') {
+			return
+		}
+
+		let splitCode = ','
+		// 2 個以上のタブが含まれていたらタブ区切りと判断する
+		const count = record.split('\t').length - 1
+		splitCode = (count >= 2) ? '\t' : splitCode
+
+		this.inSplitCode = splitCode
+		const value = CsvManager.cnvSplitCode2String(splitCode)
+		document.getElementById("split_type").value = value
+		document.getElementById("dl_split_type").value = value
+	}
+
+	/**
+	 * Unicode に変換した文字列を取得
+	 * 
+	 * サポートする文字コードは以下のみです。
+	 * - utf-8
+	 * - Shift_JIS
+	 * 
+	 * @param Uint8Array codes
+	 * @return string unicode に変換した文字列
+	 */
+	getUnicodeString(codes) {
+		let encoding = 'utf-8'
+		if (this.inEncoding == 'auto') {
+			// 文字コードの自動検出（SJIS のみ判定）
+			const detectedEncoding = Encoding.detect(codes)
+			encoding = (detectedEncoding == 'SJIS') ? 'Shift_JIS' : encoding
+			this.inEncoding = encoding
+			document.getElementById("encode_type").value = encoding
+			document.getElementById("dl_encode_type").value = encoding
+			document.getElementById("dl_line_feed").value = (encoding == 'Shift_JIS') ? 'CRLF' : 'LF'
+		} else {
+			encoding = this.inEncoding
+		}
+
+		// Unicode に変換した文字列を返す
+		return Encoding.convert(codes, {
+			to: 'unicode',
+			from: encoding,
+			type: 'string'
+		});
+	}
+
+	/**
 	 * ファイルロード処理
 	 * 
 	 * CSV ファイルを２次元配列でロードします。
@@ -174,12 +252,17 @@ class CsvManager
 			file.type.match("application/x-csv") ||
 			this.isTargetFile(file.name)) {
 
-			// const splitCode = this.inSplitCode
 			let reader = new FileReader()
 			reader.onload = function(e) {
-				let text = e.target.result
+				const codes = new Uint8Array(e.target.result);
+				// Unicode に変換した文字列を取得
+				const text = csvManager.getUnicodeString(codes)
+				console.log('encoding: ' +  csvManager.getLoadEncoding())
 				let tempArray = text.split("\n")
 				const length = tempArray.length
+				// 区切り文字の自動検出
+				csvManager.autoDetectSplitCode(tempArray[0])
+				console.log('splitCode: ' +  csvManager.getLoadSplitCode())
 				for (let index = 0; index < length; index++) {
 					csvManager.dataPush(tempArray[index])
 				}
@@ -190,7 +273,7 @@ class CsvManager
 			reader.onabort = function(e) { print("onabort")}
 			reader.onerror = function(e) { print("onerror")}
 			reader.loadend = function(e) { print("loadend")}
-			reader.readAsText(file, this.inEncoding)
+			reader.readAsArrayBuffer(file)
 		// 上記以外の場合
 		} else {
 			createTable([])
