@@ -20,6 +20,14 @@ strong.error {
   color: #ff0000;
 }
 
+select {
+  height: 2em;
+}
+
+button {
+  height: 2em;
+}
+
 summary {
   color: red;
 }
